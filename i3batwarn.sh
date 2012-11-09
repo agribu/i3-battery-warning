@@ -61,9 +61,8 @@ PERCENT=`echo $(( $REM * 100 / $FULL ))`
 MESSAGE="AWW SNAP! I am running out of juice ...  Please, charge me or I'll have to power down."
 
 # set energy limit in percent
-LIMIT="30"
+LIMIT="15"
 
-    echo $STAT
 # set limit and show warning
 if [ $PERCENT -le "$(echo $LIMIT)" ] && [ "$STAT" == "Discharging" ]; then
     DISPLAY=:0.0 /usr/bin/i3-nagbar -m "$(echo $MESSAGE)"
