@@ -45,6 +45,9 @@ ps -f -p $pid --no-headers | awk '{print $2,$3}' > $LOCK_FILE
 # set Battery
 BATTERY=/sys/class/power_supply/BAT1
 
+# get battery status
+STAT=$(cat $BATTERY/status)
+
 # get remaining energy value
 REM=`grep "POWER_SUPPLY_ENERGY_NOW" $BATTERY/uevent | cut -d= -f2`
 
@@ -58,9 +61,10 @@ PERCENT=`echo $(( $REM * 100 / $FULL ))`
 MESSAGE="AWW SNAP! I am running out of juice ...  Please, charge me or I'll have to power down."
 
 # set energy limit in percent
-LIMIT="15"
+LIMIT="30"
 
+    echo $STAT
 # set limit and show warning
-if [ $PERCENT -le "$(echo $LIMIT)" ]; then
+if [ $PERCENT -le "$(echo $LIMIT)" ] && [ "$STAT" == "Discharging" ]; then
     DISPLAY=:0.0 /usr/bin/i3-nagbar -m "$(echo $MESSAGE)"
 fi
