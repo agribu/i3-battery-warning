@@ -63,7 +63,8 @@ MESSAGE="AWW SNAP! I am running out of juice ...  Please, charge me or I'll have
 # set energy limit in percent
 LIMIT="15"
 
-# set limit and show warning
+# show warning if energy limit in percent is less then user set limit and
+# if battery is discharging
 if [ $PERCENT -le "$(echo $LIMIT)" ] && [ "$STAT" == "Discharging" ]; then
     DISPLAY=:0.0 /usr/bin/i3-nagbar -m "$(echo $MESSAGE)"
 fi
