@@ -20,7 +20,7 @@ if [[ -a $LOCK_FILE ]]; then
 	vppid=${ppid:-"0"}
 
     if (( $vpid < 2 || $vppid < 2 )); then
-		#echo "Corrupt lock file $LOCK_FILE ... Exiting"
+		# corrupt lock file $LOCK_FILE ... Exiting
 		cp -f $LOCK_FILE ${LOCK_FILE}.`date +%Y%m%d%H%M%S`
 		exit
 	fi
@@ -29,10 +29,10 @@ if [[ -a $LOCK_FILE ]]; then
 	ps -f -p $pid --no-headers | grep $ppid >/dev/null 2>&1
 
     if [[ $? -eq 0 ]]; then
-		#echo "Another copy of script running with process id $pid"
+		# another copy of script running with process id $pid
 		exit
 	else
-		#echo "Bogus lock file found, removing"
+		# bogus lock file found, removing
 		rm -f $LOCK_FILE >/dev/null
 	fi
 
@@ -40,19 +40,22 @@ fi
 
 pid=$$
 ps -f -p $pid --no-headers | awk '{print $2,$3}' > $LOCK_FILE
-#echo "Starting with process id $pid"
+# starting with process id $pid
 
 # set Battery
-BATTERY=/sys/class/power_supply/BAT1
+BATTERY=$(ls /sys/class/power_supply/ | grep '^BAT')
+
+# set full path
+PATH=/sys/class/power_supply/$BATTERY
 
 # get battery status
-STAT=$(cat $BATTERY/status)
+STAT=$(cat $PATH/status)
 
 # get remaining energy value
-REM=`grep "POWER_SUPPLY_ENERGY_NOW" $BATTERY/uevent | cut -d= -f2`
+REM=`grep "POWER_SUPPLY_ENERGY_NOW" $PATH/uevent | cut -d= -f2`
 
 # get full energy value
-FULL=`grep "POWER_SUPPLY_ENERGY_FULL_DESIGN" $BATTERY/uevent | cut -d= -f2`
+FULL=`grep "POWER_SUPPLY_ENERGY_FULL_DESIGN" $PATH/uevent | cut -d= -f2`
 
 # get current energy value in percent
 PERCENT=`echo $(( $REM * 100 / $FULL ))`
@@ -60,7 +63,7 @@ PERCENT=`echo $(( $REM * 100 / $FULL ))`
 # set error message
 MESSAGE="AWW SNAP! I am running out of juice ...  Please, charge me or I'll have to power down."
 
-# set energy limit in percent
+# set energy limit in percent, where warning should be displayed
 LIMIT="15"
 
 # show warning if energy limit in percent is less then user set limit and
