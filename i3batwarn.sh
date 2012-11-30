@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 #############################################
 # This is a simple battery warning script.  #
@@ -49,7 +49,7 @@ BATTERY=$(ls /sys/class/power_supply/ | grep '^BAT')
 ACPI_PATH="/sys/class/power_supply/$BATTERY"
 
 # get battery status
-STAT='cat $PATH/status'
+STAT=$(cat $ACPI_PATH/status)
 
 # get remaining energy value
 REM=`grep "POWER_SUPPLY_ENERGY_NOW" $ACPI_PATH/uevent | cut -d= -f2`
@@ -64,7 +64,7 @@ PERCENT=`echo $(( $REM * 100 / $FULL ))`
 MESSAGE="AWW SNAP! I am running out of juice ...  Please, charge me or I'll have to power down."
 
 # set energy limit in percent, where warning should be displayed
-LIMIT="15"
+LIMIT="10"
 
 # show warning if energy limit in percent is less then user set limit and
 # if battery is discharging
