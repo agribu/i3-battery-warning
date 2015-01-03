@@ -4,7 +4,7 @@
 # This is a simple battery warning script.  #
 # It uses i3's nagbar to display warnings.  #
 #                                           #
-# @author agribu <agribu[att]online[dott]de>#
+# @author agribu                            #
 #############################################
 
 # lock file location
